@@ -15,6 +15,10 @@ type User struct {
 	Role int `gorm:"type:int" json:"role"`
 }
 
+func (u *User)BeforeSave()  {
+	u.Password = EncryptPw(u.Password)
+}
+
 func CheckUser(name string) (code int)  {
 	var users User
 	db.Select("id").Where("username = ?", name).First(&users)
@@ -27,7 +31,7 @@ func CheckUser(name string) (code int)  {
 }
 
 func CreateUser(data *User) int {
-	data.Password = EncryptPw(data.Password)
+	//data.Password = EncryptPw(data.Password)
 	err = db.Create(&data).Error
 	if err != nil {
 		return msg.ERROR
@@ -44,6 +48,26 @@ func GetUsers(pageSize int, pageNum int) []User {
 		return nil
 	}
 	return users
+}
+
+func DeleteUser(id int) int {
+	err = db.Where("ID = ?", id).Delete(&User{}).Error
+	if err != nil {
+		return msg.ERROR
+	}
+	return msg.SUCCESS
+}
+
+func EditUser(id int, data *User) int {
+	var user User
+	maps := make(map[string]interface{})
+	maps["username"] = data.Username
+	maps["role"] = data.Role
+	err = db.Model(&user).Where("id = ?",id).Update(maps).Error
+	if err != nil {
+		return msg.ERROR
+	}
+	return msg.SUCCESS
 }
 
 func EncryptPw(password string) string {
