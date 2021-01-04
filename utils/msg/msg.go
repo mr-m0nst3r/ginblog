@@ -18,6 +18,7 @@ const (
 
 
 	// code =  3000... category msg
+	ErrCategoryUsed = 3001
 )
 
 var Codemsg = map[int]string{
@@ -30,6 +31,7 @@ var Codemsg = map[int]string{
 	ErrTokenExpired:   "TOKEN已过期",
 	ErrTokenWrong:     "TOKEN不正确",
 	ErrTokenTypeWrong: "TOKEN格式错误",
+	ErrCategoryUsed: "分类名已被占用",
 }
 
 func GetMsg(code int) string  {
